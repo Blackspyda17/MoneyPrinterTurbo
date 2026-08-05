@@ -17,6 +17,29 @@ device = config.whisper.get("device", "cpu")
 compute_type = config.whisper.get("compute_type", "int8")
 model = None
 
+# initial_prompt biases Whisper's decoder to recognize brand names correctly
+# (without it, "DreamIQ" is transcribed as "Dreamy Q" in Spanish TTS audio).
+_DREAMIQ_INITIAL_PROMPT = (
+    "DreamIQ es una app de seguimiento del sueño con inteligencia artificial. "
+    "DreamIQ tracks sleep stages and detects health risks."
+)
+
+# Safety-net corrections for known Whisper mishearings (e.g. "Dreamy Q" -> "DreamIQ").
+# initial_prompt handles most cases at the source; this catches any that slip through.
+_DREAMIQ_CORRECTIONS = [
+    (re.compile(r"dreamy q", re.IGNORECASE), "DreamIQ"),
+    (re.compile(r"dream iq", re.IGNORECASE), "DreamIQ"),
+    (re.compile(r"dream i\.q\.", re.IGNORECASE), "DreamIQ"),
+    (re.compile(r"dreamy", re.IGNORECASE), "DreamIQ"),
+]
+
+
+def _correct_brand_names(text: str) -> str:
+    """Fix known Whisper mishearings of the DreamIQ brand name."""
+    for pattern, replacement in _DREAMIQ_CORRECTIONS:
+        text = pattern.sub(replacement, text)
+    return text
+
 
 def create(audio_file, subtitle_file: str = ""):
     global model
@@ -57,6 +80,7 @@ def create(audio_file, subtitle_file: str = ""):
         word_timestamps=True,
         vad_filter=True,
         vad_parameters=dict(min_silence_duration_ms=500),
+        initial_prompt=_DREAMIQ_INITIAL_PROMPT,
     )
 
     logger.info(
@@ -67,7 +91,7 @@ def create(audio_file, subtitle_file: str = ""):
     subtitles = []
 
     def recognized(seg_text, seg_start, seg_end):
-        seg_text = seg_text.strip()
+        seg_text = _correct_brand_names(seg_text.strip())
         if not seg_text:
             return
 

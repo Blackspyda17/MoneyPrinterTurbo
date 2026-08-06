@@ -1,0 +1,67 @@
+# =============================================================================
+# TEMPLATE DE POST-PROCESAMIENTO — MoneyPrinterTurbo / DreamIQ
+# =============================================================================
+#
+# INSTRUCCIONES DE USO
+# --------------------
+# 1. Copia este archivo: cp template.toml mi_video.toml
+# 2. Edita los campos según tu video
+# 3. Ejecuta desde la carpeta marketing/video-generation/:
+#
+#    Ver comandos sin ejecutar (safe):
+#      python postprocess/postprocess.py postprocess/configs/mi_video.toml --dry-run
+#
+#    Verificar timestamps con clips de preview de ~10s (rápido):
+#      python postprocess/postprocess.py postprocess/configs/mi_video.toml --preview
+#
+#    Render final completo:
+#      python postprocess/postprocess.py postprocess/configs/mi_video.toml
+#
+# WORKFLOW RECOMENDADO
+# --------------------
+# 1. Genera el video con el WebUI de MoneyPrinterTurbo
+# 2. Nota los timestamps aproximados mirando el video (VLC, QuickTime, etc.)
+# 3. Pon esos timestamps aquí y corre --preview para afinar
+# 4. Cuando estés conforme con el preview, corre el render final
+#
+# =============================================================================
+
+
+# -----------------------------------------------------------------------------
+# VIDEO BASE
+# -----------------------------------------------------------------------------
+
+# Ruta al video generado por MoneyPrinterTurbo.
+# Puedes usar rutas relativas (desde marketing/video-generation/) o absolutas.
+# Ejemplo: "./storage/tasks/17984f06-2365-4502-8f7e-ae486ca186c2/final-1.mp4"
+base_video = "./postprocess/external_generations/script_18_ia_generated_english.mp4"
+
+# Ruta donde se guardará el video final post-procesado.
+# La carpeta se crea automáticamente si no existe.
+output = "./outputs/script_18_en_final.mp4"
+
+
+
+
+
+# -----------------------------------------------------------------------------
+# END CARD (imagen final con fade-in)
+# -----------------------------------------------------------------------------
+# Imagen PNG que aparece gradualmente sobre el video al final.
+# Debe ser 1080x1920px (misma resolución que el video).
+#
+# Flujo visual: video normal → end card va apareciendo lentamente →
+#               video termina con end card visible →
+#               CTA visual: logo + badges de tiendas + URL
+
+[end_card]
+# Ruta a la imagen PNG del end card (1080x1920px)
+file = "./assets/dreamiq-video-end-card-english.png"
+
+# Segundo del video donde empieza el fade-in del end card.
+# Video de 58s, end card empieza a los 48s y dura 3s (ocupa los últimos 11 segundos)
+start_at = 43.0
+
+# Duración del fade-in en segundos (cuántos segundos tarda en aparecer del todo)
+# Recomendado: 2.0 - 4.0s
+fade_duration = 3.0

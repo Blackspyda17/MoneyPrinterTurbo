@@ -1,0 +1,21 @@
+# Post-procesamiento: DreamIQ — Nuevo Video (1 solo clip)
+
+# 1. Ruta del video base (el video donde está el avatar o narrador)
+base_video = "./storage/tasks/ee4f8bb8-8e0f-4085-a2ee-dd57273915bf/final-1.mp4"
+
+# 2. Dónde se guardará el resultado final
+output     = "./outputs/dreamiq_nuevo_final.mp4"
+
+# 3. Clip 1 (Tu grabación de pantalla con el frame de iPhone)
+[[clips]]
+file               = "/Users/andres/Documents/dev/dreamIQ-images/videos/final_screenrecord_framed.mp4"
+insert_at          = 44.0  # <-- CAMBIA ESTO: en qué segundo exacto quieres que aparezca
+transition_in      = "fadeblack"
+transition_out     = "fadeblack"
+transition_duration = 1.0
+
+# 4. End card (Opcional): Aparece al final del video para el Call to Action
+[end_card]
+file         = "./assets/dreamiq-video-end-card.png"
+start_at     = 74.0  # Si lo comentas o borras, el script lo calcula automáticamente para que aparezca al final
+fade_duration = 3.0

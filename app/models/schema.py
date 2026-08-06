@@ -113,6 +113,13 @@ class VideoParams(BaseModel):
     text_fore_color: Optional[str] = "#FFFFFF"
     text_background_color: Union[bool, str] = False
     rounded_subtitle_background: bool = False
+    enable_word_highlighting: Optional[bool] = config.ui.get(
+        "enable_word_highlighting", False
+    )
+    word_highlight_color: Optional[str] = config.ui.get(
+        "word_highlight_color", "#0ca2e2"
+    )
+    _enhanced_subtitle_path: Optional[str] = pydantic.PrivateAttr(default=None)
 
     font_size: int = 60
     stroke_color: Optional[str] = "#000000"

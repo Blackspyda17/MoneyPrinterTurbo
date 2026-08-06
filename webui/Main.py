@@ -104,6 +104,8 @@ DEFAULT_SUBTITLE_SETTINGS = {
     "subtitle_background_enabled": False,
     "subtitle_background_color": "#000000",
     "rounded_subtitle_background": False,
+    "enable_word_highlighting": False,
+    "word_highlight_color": "#0ca2e2",
 }
 LOCAL_MATERIAL_EXTENSIONS = {
     ".mp4",
@@ -1069,6 +1071,12 @@ def _apply_pending_task_restore():
     st.session_state["rounded_subtitle_background_checkbox"] = bool(
         params.get("rounded_subtitle_background", False) and background_enabled
     )
+    st.session_state["word_highlighting_checkbox"] = bool(
+        params.get("enable_word_highlighting", False)
+    )
+    st.session_state["highlight_color_picker"] = (
+        params.get("word_highlight_color") or "#0ca2e2"
+    )
 
     st.session_state.pop("local_video_materials_uploader", None)
     # 历史任务只保存素材路径，不能保证这些文件在当前环境仍然存在。
@@ -1691,6 +1699,12 @@ def reset_subtitle_settings():
     st.session_state["rounded_subtitle_background_checkbox"] = defaults[
         "rounded_subtitle_background"
     ]
+    st.session_state["word_highlighting_checkbox"] = defaults.get(
+        "enable_word_highlighting", False
+    )
+    st.session_state["highlight_color_picker"] = defaults.get(
+        "word_highlight_color", "#0ca2e2"
+    )
 
     # 同步会持久化的 UI 选项，确保恢复后刷新页面仍保持默认设置。
     for key in (
@@ -3796,6 +3810,39 @@ def _render_subtitle_settings(panel, params):
                     "ui",
                     "rounded_subtitle_background",
                     selected_rounded_subtitle_background,
+                )
+
+            saved_word_highlighting = config.ui.get(
+                "enable_word_highlighting",
+                DEFAULT_SUBTITLE_SETTINGS.get("enable_word_highlighting", False),
+            )
+            st.session_state.setdefault(
+                "word_highlighting_checkbox", saved_word_highlighting
+            )
+            params.enable_word_highlighting = st.checkbox(
+                tr("Enable Word Highlighting"),
+                help=tr("Enable Word Highlighting Help"),
+                disabled=subtitle_settings_disabled,
+                key="word_highlighting_checkbox",
+            )
+            saved_highlight_color = config.ui.get(
+                "word_highlight_color",
+                DEFAULT_SUBTITLE_SETTINGS.get("word_highlight_color", "#0ca2e2"),
+            )
+            st.session_state.setdefault("highlight_color_picker", saved_highlight_color)
+            params.word_highlight_color = st.color_picker(
+                tr("Highlight Color"),
+                key="highlight_color_picker",
+                disabled=subtitle_settings_disabled or not params.enable_word_highlighting,
+            )
+            if not subtitle_settings_disabled:
+                _set_runtime_config(
+                    "ui",
+                    "enable_word_highlighting",
+                    params.enable_word_highlighting,
+                )
+                _set_runtime_config(
+                    "ui", "word_highlight_color", params.word_highlight_color
                 )
 
             if video.subtitle_colors_are_indistinguishable(params):

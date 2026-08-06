@@ -1,0 +1,33 @@
+# Post-procesamiento: DreamIQ — Video ES (saboteo del sueño)
+# Video generado: task 17984f06
+# Duración base: 76.2s
+
+base_video = "./storage/tasks/17984f06-2365-4502-8f7e-ae486ca186c2/final-1.mp4"
+output     = "./outputs/dreamiq_es_final.mp4"
+
+# Clip 1 — Segundo 39: antes de "DreamIQ no solo analiza tus fases de sueño"
+# El dashboard responde visualmente la pregunta "¿Cómo saber si esto te pasa?"
+[[clips]]
+file               = "./storage/local_videos/dreamiq_converted/dashboard_es.mp4"
+insert_at          = 39.0
+transition_in      = "slideup"
+transition_out     = "slidedown"
+transition_duration = 0.5
+
+# Clip 2 — Segundo 54: mientras la voz dice "Te asigna misiones inteligentes personalizadas"
+# Muestra la pantalla de health risk para reforzar visualmente la detección de riesgos
+# REGLA: insert_at debe ser > insert_at_anterior + duración_del_clip_anterior
+#        39.0 + 8.7s (dashboard) = 47.7s → cualquier valor > 47.7s es válido
+[[clips]]
+file               = "./storage/local_videos/dreamiq_converted/health_risk_es.mp4"
+insert_at          = 54.0
+transition_in      = "slideup"
+transition_out     = "slidedown"
+transition_duration = 0.5
+
+# End card: aparece a los 70s mientras la voz dice "Descárgalo gratis"
+# El end card con los store badges refuerza el CTA visualmente
+[end_card]
+file         = "./assets/dreamiq-video-end-card.png"
+start_at     = 70.0
+fade_duration = 3.0
